@@ -1,6 +1,85 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
+void instructions();
+char PlayerSymbol(string question);
+char Opponent(char a);
+char winner();
+
+const int NUM_SQUARES = 9;
+const char EMPTY = '.';
+const vector<char> board(NUM_SQUARES, EMPTY);
+const char X = 'X';
+const char O = 'O';
+const char NO_ONE = 'N';
+
+int main()
+{
+	char player = X;
+	char ai = O;
+	char turno = X;
+	instructions();
+	cout << endl;
+	player = PlayerSymbol("deseas ir primero? ");
+	cout << player << endl;
+	ai = Opponent(player);
+	cout << ai << endl;
+}
+
+void instructions()
+{
+	cout << "Bienvenido a tic tac toe, elije una posicion entre el 0 y el 8" << endl;
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << board[j];
+		}
+		cout << endl;
+	}
+}
+
+char PlayerSymbol(string question)
+{
+	char answer;
+
+	do {
+		cout << "\n" << question << "(y/n)" << endl;
+		cin >> answer;
+	} while (answer != 'y' && answer != 'n');
+
+	if (answer == 'y')
+	{
+		return X;
+	}
+
+	return O;
+}
+
+char Opponent(char a)
+{
+	char opponent;
+
+	if (a == X)
+	{
+		opponent = O;
+	}
+	else
+	{
+		opponent = X;
+	}
+
+	return opponent;
+}
+
+char winner()
+{
+	//tarea adaptar victoria a win que reciba board y que return X, O, Tie o NoONe
+}
+
+/*
 const int COLUMNS = 3;
 const int  ROWS = 3;
 void TicTacToe();
@@ -171,3 +250,4 @@ bool win(int input, char board[COLUMNS][ROWS])
 
 	return victory;
 }
+*/
