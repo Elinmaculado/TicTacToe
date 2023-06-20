@@ -1,41 +1,126 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <cctype>
+#include <string>
 using namespace std;
 
 void instructions();
 char PlayerSymbol(string question);
 char Opponent(char a);
-char winner();
+char winner(const vector<char>& board);
+void displayBoard(vector <char>& board);
+int playerMove(vector <char>& board);
+int askNumber(string question, int high, int low);
 
 const int NUM_SQUARES = 9;
 const char EMPTY = '.';
-const vector<char> board(NUM_SQUARES, EMPTY);
+
 const char X = 'X';
 const char O = 'O';
 const char NO_ONE = 'N';
+const char TIE = 'T';
 
 int main()
 {
+	vector<char> board(NUM_SQUARES, EMPTY);
+	int move = 0;
 	char player = X;
 	char ai = O;
-	char turno = X;
+	char turn = player;
 	instructions();
+	displayBoard(board);
 	cout << endl;
 	player = PlayerSymbol("deseas ir primero? ");
 	cout << player << endl;
 	ai = Opponent(player);
 	cout << ai << endl;
+
+	while (winner(board) == NO_ONE)
+	{
+
+		if (turn == player)
+		{
+			playerMove(board);
+		}
+		else
+		{
+			playerMove(board);
+		}
+		displayBoard(board);
+		system("pause");
+	}
+}
+
+
+int playerMove(vector <char>& board)
+{
+	int choice;
+	do{
+	choice = askNumber("Elija un espacio vacio", 0, 9);
+	} while (board[choice] == '.');
+	return choice;
+}
+
+int askNumber(string question, int high, int low)
+{
+	string input;
+	bool isValid;
+
+	//int number = 0;
+
+	do {
+		cout << question << "entre " << low << " y " << high << endl;
+		//cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		getline(cin, input);
+
+
+		isValid = false;
+
+		for (char c : input)
+		{
+			if (!isdigit(c))
+			{
+				cout << endl << "elige un numero" << endl;
+				isValid = false;
+				break;
+			}
+		}
+
+		if (stoi(input) < low || stoi(input) > high)
+		{
+			cout << "elige un numero valido" << endl;
+			isValid = false;
+		}
+
+	} while (!isValid || input.empty() || stoi(input) > high || stoi(input) < low);
+
+	return stoi(input);
+}
+
+void displayBoard(vector <char>& board)
+{
+	cout << "Bienvenido a tic tac toe, elije una posicion entre el 0 y el 8" << endl;
+
+	cout << board[0] << " " << board[1] << " " << board[2] << endl;
+	cout << board[3] << " " << board[4] << " " << board[5] << endl;
+	cout << board[6] << " " << board[7] << " " << board[8] << endl;
 }
 
 void instructions()
 {
-	cout << "Bienvenido a tic tac toe, elije una posicion entre el 0 y el 8" << endl;
+	char boardoptions[3][3] = { {'0', '1', '2'},
+										 {'3', '4', '5'},
+										 {'6', '7', '8'} };
 
+	cout << "Bienvenido a un nuevo TicTacToe" << endl;
+	cout << "En este juego te enfrentaras a una IA basica" << endl;
+	cout << "El tablero siguiente representa tus controles, recuerdalos bien" << endl;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			cout << board[j];
+			cout << boardoptions[i][j];
 		}
 		cout << endl;
 	}
@@ -74,10 +159,41 @@ char Opponent(char a)
 	return opponent;
 }
 
-char winner()
+char winner(const vector<char>& board)
 {
-	//tarea adaptar victoria a win que reciba board y que return X, O, Tie o NoONe
+
+	//This are the posibilities to win
+	const int WINNING_POS[8][3] = { {0, 1, 2}, //Horizontal
+									{3, 4, 5}, //Horizontal
+									{6, 7, 8}, //Horizontal
+									{0, 3, 6}, //Vertical
+									{1, 4, 7}, //Vertical
+									{2, 5, 8}, //Vertical
+									{2, 4, 6}, //Horizontal
+									{0, 4, 8} }; //Horizontal
+	const int TOTAL_ROWS = 8;
+
+	//Return the winner
+	for (int row = 0; row < TOTAL_ROWS; row++)
+	{
+		if ((board[WINNING_POS[row][0]] != EMPTY) &&
+			(board[WINNING_POS[row][0]] == board[WINNING_POS[row][1]]) &&
+			(board[WINNING_POS[row][1]] == board[WINNING_POS[row][2]]))
+		{
+			return board[WINNING_POS[row][0]];
+		}
+	}
+
+	//Return a Tie
+	if (count(board.begin(), board.end(), EMPTY) == 0) {
+		return TIE;
+	}
+
+	//Return that no one is the winner yet
+	return NO_ONE;
 }
+
+
 
 /*
 const int COLUMNS = 3;
